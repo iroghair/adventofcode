@@ -22,9 +22,12 @@ for n in range(0,len(data)):
   elves[n]=(np.fromstring(data[n],sep='\n'))
   total_cal[n] = np.sum(elves[n])
 
-# Visualise what elves are carrying
-sns.histplot(data=total_cal)
-plt.show()
-
-# Print the answer
+# Print the answer to Q1
 print(f'The maximum amount of calories is {np.int64(np.amax(total_cal)):d} carried by elf {np.argmax(total_cal):1}')
+
+# Answer for Q2
+# Sort by total amount of calories, reverse the order (max first)
+sort_idx = np.argsort(total_cal)[::-1]
+
+# Print answer top-3 and sum
+print(f'The top-3 amounts of calories are {(total_cal[sort_idx[0:3]]).astype(int)} (total {np.sum(total_cal[sort_idx[0:3]]).astype(int)} carried by elves {(sort_idx[0:3]).astype(int)}')
