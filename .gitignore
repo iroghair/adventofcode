@@ -127,3 +127,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+Day01/aoc_2022_day01_large_input.txt
