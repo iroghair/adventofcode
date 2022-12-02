@@ -37,4 +37,4 @@ scores = np.array([0,0])
 for i in range(0,len(data)):
   scores = scores + playRound(data[i])
 
-print(scores)
+print(f'Opponent scores {scores[0]}, I score {scores[1]}')
