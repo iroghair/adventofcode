@@ -3,7 +3,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # TODO create https session with GitHub login and retrieve input data automatically
-myfile = 'input.txt'
+# myfile = 'input.txt'
+myfile = 'aoc_2022_day01_large_input.txt'
 
 # Read data to buffer (elves are separated by double newline)
 with open(myfile, 'r') as f:
