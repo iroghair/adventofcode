@@ -1,14 +1,13 @@
 import numpy as np
 
 def playRound(shapes):
-  allshapes = 'ABC'
   # Split shapes into two elements, replace XYZ by ABC
   oppshape, myshape = shapes[0], replace[shapes[2]]
   
   # Question 2:
   # Take first, second or third letter of allshapes (i.e. A,B or C), depending
   # on combination of opponent shape and my Lose-Draw-Win indicator XYZ 
-  myshape = allshapes[ (points[oppshape] + points[replace[shapes[2]]]) % 3]
+  myshape = 'ABC'[ (points[oppshape] + points[replace[shapes[2]]]) % 3]
   
   result = getResult(oppshape, myshape)
   return [points[oppshape], points[myshape]] + 3*result
