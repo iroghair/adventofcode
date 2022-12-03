@@ -1,0 +1,18 @@
+import re
+import string
+
+myfile = 'test.txt'
+matches = []
+total_prio = 0
+total_badge = 0
+alphabet = (string.ascii_lowercase + string.ascii_uppercase)
+
+with open(myfile, 'r') as f:
+  lines = f.read().rsplit()
+  for line in lines:
+    mid = int(len(line)/2)
+    c1,c2 = line[:mid],line[mid:]
+    matches.append(re.search(str('['+c1+']'),c2).group())
+    total_prio = total_prio + (alphabet.find(matches[-1]) + 1)
+
+print(f'Total number of priorities is: {total_prio:d}')
