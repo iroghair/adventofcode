@@ -17,8 +17,9 @@ data = input
 n = 0
 set_length = len(set(data[n:n+window_size]))
 while (set_length < window_size):
-    # n = n + (window_size - set_length)
-    n = n + 1
+    # Take adaptive steps, based on how manu duplicates are already in the set
+    n = n + (window_size - set_length)
+    # n = n + 1
     set_length = len(set(data[n:n+window_size]))
 
 print(n+window_size)
