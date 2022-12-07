@@ -96,7 +96,7 @@ if (False):
     print(head_node.get_sub_dir_names())
 
 else:
-    myfile = 'test.txt'
+    myfile = 'input.txt'
 
     with open(myfile, 'r') as file:
         lines = [line for line in file.read().split('$') if line]
