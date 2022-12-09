@@ -76,24 +76,14 @@ class Dir:
 
         this_subdir_size = list()
 
-        # this_subdir_size.append(self.get_current_size())
         # Loop over all recursive dirs, including $PWD
         for dir in self.get_recursive_subdirs():
             print('Adding for ', self, ':  ', dir, dir.get_current_size())
             this_subdir_size.append(dir.get_current_size())
 
-        # if len(self.get_recursive_subdirs())==0:
-        #     print(self.name, 'has no subdirs...')
-
-        # [[this_subdir_size.append(subdir.get_current_size())
-        #     for subdir in dir.get_recursive_subdirs()]
-        #     for dir in self.subdirs if self.subdirs]
-
         # If this is a non-leaf folder, add the sum of each subdir size and flatten
         self.subdir_size = sum(this_subdir_size)
-        # self.subdir_size = self.subdir_size + sum([subdir.total_size for subdir in dir.get_recursive_subdirs()])
-        # [item for sublist in regular_list for item in sublist]
-        # [dir_list.append(dir) for dir in self.get_recursive_subdirs()]
+
         return self.subdir_size
 
     def get_recursive_subdirs(self):
@@ -106,7 +96,6 @@ class Dir:
          for dir in self.subdirs if self.subdirs]
 
         return dir_list
-
 
 class File:
     def __init__(self, name, size):
@@ -163,20 +152,11 @@ else:
         lines = [line for line in file.read().split('$') if line]
 
     head_node, dir_list= build_tree(lines)
-    print(sum([dir.subdir_size for dir in dir_list if (dir.subdir_size <= 100000)]))
 
-    dirs = head_node.get_recursive_subdirs()
-
-    # [print(dir, dir.get_current_size())
-    #  for dir in dirs]  # if dir.get_subdir_size2() <= 100000]
-    # print(sum([dir.get_current_size()
-    #       for dir in dirs if dir.get_subdir_size2() <= 100000]))
-    # flat_list = [item for sublist in regular_list for item in sublist]
-    # sizes = head_node.get_subdir_size()
-
-    # Test case: should be
-    # assert 48381165 == head_node.get_subdir_size()
-    # print(
-    #     f'The size of root is: {head_node.get_subdir_size()}, and should be 48381165.')
-
-    # Traverse all
+    small_dir_sizes = [dir.subdir_size for dir in dir_list if (dir.subdir_size <= 100000)]
+    print(sum(small_dir_sizes))
+    headnode_size = head_node.subdir_size
+    print(f'Total space: 70000000; Used space: {headnode_size:d}; Free space: {int(7e7-headnode_size)}')
+    candidate_for_delete_sizes = [dir.subdir_size for dir in dir_list if (dir.subdir_size >= 3e7-(7e7-headnode_size))]
+    print(f'{len(candidate_for_delete_sizes)} candidates for deletion found! Smallest folder is {min(candidate_for_delete_sizes)} bytes.')
+    
