@@ -15,7 +15,7 @@ class Monkey:
     def round(self):
         for item in self.items:
             # Adjust worry value
-            worry = self.inspect(item)
+            worry = gmpy.mpz(self.inspect(item))
             self.has_inspected += 1
             # Monkey is bored, decrease worry level
             if part==1:
