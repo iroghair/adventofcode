@@ -1,11 +1,74 @@
 import re
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import dijkstra
-from collections import deque
 
-myfile = 'test2.txt'
+class Scenario:
+    def __init__(self, starting_node, valve_states, 
+    valve_rates, dist_matrix, predecessors, 
+    has_goal=False, node_list=[], total_relief=0, visited=[], track_me=False):
+        self.s0 = starting_node
+        self.vstat = valve_states.copy()
+        self.vrate = valve_rates.copy()
+        self.dm = dist_matrix
+        self.pred = predecessors
+        self.has_goal = has_goal
+        self.node_list = node_list
+        self.n_scenarios = 4
+        self.total_relief = total_relief
+        self.visited = visited.copy()
+        self.track_me = track_me
+
+    def get_new_scenarios(self,time_left):
+        # Init a number of possible scenario's with anticipated high pressure relief, branch from current position
+        new_scenarios = []
+        if not self.has_goal:
+            projected_valve_relief = (time_left-self.dm[self.s0,:]) * (1-self.vstat) * self.vrate
+            move_to_list = np.argsort(projected_valve_relief).tolist()
+            move_to_list = [m for m in move_to_list if projected_valve_relief[m] > 0]
+            for goal_node in move_to_list:
+                node_list = self.get_node_list(goal_node)
+                scenario = Scenario(self.s0, self.vstat, self.vrate, self.dm, self.pred, True, node_list, self.total_relief, self.visited, self.track_me)
+                new_scenarios.append(scenario)
+        return new_scenarios
+    
+    def get_node_list(self,goal_node):
+        node_list = [goal_node]
+        via_node = self.pred[self.s0,goal_node]
+        while (via_node != self.s0):
+            node_list.append(via_node)
+            via_node = self.pred[self.s0,via_node]
+        return node_list
+        
+    def has_goal_defined(self):
+        return self.has_goal
+
+    def take_step(self):
+        # Wel leuk om hier ook de global path (goal nodes) en detailed path (all nodes travelled) op te slaan
+        # Step 0. Relief open valves
+        new_relief = np.sum((self.vstat) * self.vrate)
+        self.total_relief += new_relief
+
+        # Step 1. Go to next valve 
+        if len(self.node_list) > 0:
+            # New current position
+            self.s0 = self.node_list[-1] 
+            # Remove from queue
+            self.node_list.pop()
+        else:
+            # Step 2. Goal node has been reached
+            self.visited.append(self.s0)
+            # Open valve at current pos
+            self.vstat[self.s0] = 1
+            self.has_goal = False
+
+    def get_total_relief(self):
+        return self.total_relief
+
+# Input
+myfile = 'test.txt'
+time_left = 30
+starting_node_label = 'AA'
 
 with open(myfile, 'r') as file:
     lines = file.readlines()
@@ -19,54 +82,46 @@ for line in lines:
 
 max_valve = len(valves)
 print(f'Nodes found: {sorted(valves)}, total number: {max_valve}')
-flowrate = [valves[v]['flowrate'] for v in sorted(valves)]
-
-'valve_relief = np.zeros((max_valve,))
+valve_rates = [valves[v]['flowrate'] for v in sorted(valves)]
+# valve_ids = [valves[v]['id'] for v in sorted(valves)]
+# valve_relief = np.zeros((max_valve,))
 for i,n in enumerate(sorted([v for v in valves])):
     valves[n]['id'] = i
-    valve_relief[i] = valves[n]['flowrate']
+    # valve_relief[i] = valves[n]['flowrate']
+
+valve_states = np.zeros((max_valve,)) # 0: closed, 1: open
+
 graph = np.zeros((max_valve,max_valve))
 for v in sorted(valves):
     vi = int(valves[v]['id'])
     for c in valves[v]['coupled']:
         ci = int(valves[c]['id'])
-        # print(f"From valve {v} (ID: {valves[v]['id']}) you can move to valve {c} (ID: {valves[c]['id']})")
         graph[vi][ci] = 1
-
-# plt.imshow(graph)
 
 graph = csr_matrix(graph)
 
 # Pressure relief testing
-t = 30
-current_valve_name = 'AA'
+starting_node = valves[starting_node_label]['id']
 dist_matrix, predecessors = dijkstra(csgraph=graph, return_predecessors=True)
 
-while t > 0:
-    projected_valve_relief = (t-dist_matrix-1) * valve_relief
-    current_valve = valves[current_valve_name]['id']
-    move_to = np.argsort(projected_valve_relief)[-1]
-    
-    # Project paths (from current valve to any other node p)
-    for p in range(max_valve):
-        next_valve_in_path = predecessors[current_valve][p]
-        while next_valve_in_path > 0 and next_valve_in_path != current_valve:
-            print(next_valve_in_path)
-        # nodes = deque()
-        # while 
-    # for moves in move_to[-1:-4:-1]:
-    #     print(moves)
+scenario_list = [Scenario(starting_node, valve_states, valve_rates, dist_matrix, predecessors)]
 
+while time_left > 0:
+    print(f'Minute {30-time_left}')
+    # Get new scenarios (branches from current positions, in case finished)
+    new_scenarios = [s.get_new_scenarios(time_left) for s in scenario_list]
+    # Put new scenarios to list
+    [scenario_list.extend(s) for s in new_scenarios]
+    # Remove finalized branches
+    [scenario_list.remove(s) for s in scenario_list if not s.has_goal_defined()]
+    # Let all scenario's move forward
+    [s.take_step() for s in scenario_list]
+   
+    time_left -= 1
 
-    # while np.shape(move_to) > 0:
-    #     if np.size(predecessors[move_to[-1]]) < t:
-    #         print(f'Predecessors {move_to[-1]} will be opened')
-    #     else:
-    #         move_to.pop()
+total = [s.get_total_relief() for s in scenario_list]
+print('max found: ', max(total))
+print('end')
+# 2233 too high
+# 2085 too high
 
-    
-
-    # for v in sorted(valves):
-    #     vi = int(valves[v]['id'])  
-    #     # for c in valves[v]['coupled']:
-    t -= 1
