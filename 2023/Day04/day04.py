@@ -23,7 +23,7 @@ def run_part_1_2(data):
     ans_pt2 = np.sum(ncopies)
     return ans_pt1, ans_pt2
 
-# @cache
+@cache
 def get_copies(n):
     """Get copies of the next few cards, based on the amount of winning numbers. Recursively determine
     if these cards win additional copies. Accumulate all copies in an array and return the array."""
