@@ -22,24 +22,20 @@ class mapper:
             dest = range(r[0],r[0]+r[2])
             offset = r[0]-r[1]
             self.rangelist.append((source,dest,offset))
-            self.total_map_set = set()
-            # self.total_map_set.update(source)
 
     def map(self,src):
-        a = set()
         for maps in self.rangelist:
-            newmap = {x+maps[2] for x in src.intersection(maps[0])}
-            a.update(newmap)
-        a.update(src.difference(self.total_map_set))
-        return a
-    
+            if src in maps[0]:
+                return src+maps[2]
+        return src # Default
         
 def import_data(infile):
     with open(infile,'r') as file:
         data = file.read()
 
     seeds = data.splitlines()[0].split(':')[1].split()
-    seeds = [set(range(int(x[0]),int(x[0])+int(x[1]))) for x in batched(seeds,2)]
+    seeds = [int(x) for x in seeds]
+    seeds = [range(int(x[0]),int(x[0])+int(x[1])) for x in batched(seeds,2)]
     print(seeds)
 
     mlist = []
@@ -48,14 +44,15 @@ def import_data(infile):
         mlist.append(mapper(data_in_set[0],data_in_set[2:]))
 
     minloc = sys.maxsize
+    c = 0
     for seed in seeds:
+        print((c:=c+1))
         for x in seed:
             for maps in mlist:
                 x = maps.map(x)
-        x |= {minloc}
-        minloc = min(x)
+            minloc = min(x,minloc)
 
-    print(f'Part 2: {minloc}')
+    print(f'Part 1: {minloc}')
  
 def run_part_1(data):
     ans_pt1 = ...
