@@ -23,7 +23,7 @@ class mapper:
             offset = r[0]-r[1]
             self.rangelist.append((source,dest,offset))
             self.total_map_set = set()
-            # self.total_map_set.update(source)
+            self.total_map_set.update(source)
 
     def map(self,src):
         a = set()
@@ -49,9 +49,9 @@ def import_data(infile):
 
     minloc = sys.maxsize
     for seed in seeds:
-        for x in seed:
-            for maps in mlist:
-                x = maps.map(x)
+        x = seed
+        for maps in mlist:
+            x = maps.map(x)
         x |= {minloc}
         minloc = min(x)
 
@@ -69,7 +69,7 @@ def run_part_2(data):
 
 if __name__ == '__main__':
     part1 = True
-    infile = 'input.txt'
+    infile = 'test.txt'
     data = import_data(infile)
 
     if part1:

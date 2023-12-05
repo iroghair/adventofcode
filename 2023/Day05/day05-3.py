@@ -2,6 +2,7 @@ import re
 import numpy as np
 from itertools import islice
 import sys
+import multiprocessing
 
 def batched(iterable, n):
     # batched('ABCDEFG', 3) --> ABC DEF G
@@ -29,7 +30,30 @@ class mapper:
                 return src+maps[2]
         return src # Default
         
-def import_data(infile):
+def process_mlist(seed):
+    x = seed
+    minloc = sys.maxsize
+    for maps in mlist:
+        x = maps.map(x)
+    minloc = min(x,minloc)
+    # print(minloc)
+    return minloc
+
+    
+ 
+def run_part_1(data):
+    ans_pt1 = ...
+
+    print(f'Part 1: {ans_pt1}')
+
+def run_part_2(data):
+    ans_pt2 = ...
+
+    print(f'Part 2: {ans_pt2}')
+
+if __name__ == '__main__':
+    part1 = True
+    infile = 'input.txt'
     with open(infile,'r') as file:
         data = file.read()
 
@@ -45,29 +69,15 @@ def import_data(infile):
 
     minloc = sys.maxsize
     c = 0
+    pool_obj = multiprocessing.Pool()
     for seed in seeds:
         print((c:=c+1))
-        for x in seed:
-            for maps in mlist:
-                x = maps.map(x)
-            minloc = min(x,minloc)
+        ans = pool_obj.map(process_mlist,seed)
+        minloc = min(minloc,ans)
 
     print(f'Part 1: {minloc}')
- 
-def run_part_1(data):
-    ans_pt1 = ...
+    pool_obj.close()
 
-    print(f'Part 1: {ans_pt1}')
-
-def run_part_2(data):
-    ans_pt2 = ...
-
-    print(f'Part 2: {ans_pt2}')
-
-if __name__ == '__main__':
-    part1 = True
-    infile = 'input.txt'
-    data = import_data(infile)
 
     if part1:
         run_part_1(data)
