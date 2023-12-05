@@ -26,9 +26,9 @@ class mapper:
     def map(self,src):
         for maps in self.rangelist:
             if src in maps[1]:
-                print(f'{self.name}-> src: {src} is in range: {maps[0]} and becomes {src+maps[2]}')
+                # print(f'{self.name}-> src: {src} is in range: {maps[0]} and becomes {src+maps[2]}')
                 return src-maps[2]
-        print(f'{self.name}-> src: {src} maps to {src}')
+        # print(f'{self.name}-> src: {src} maps to {src}')
         return src # Default
         
 def import_data(infile):
@@ -36,7 +36,7 @@ def import_data(infile):
         data = file.read()
 
     seeds = data.splitlines()[0].split(':')[1].split()
-    seeds = [set(range(int(x[0]),int(x[0])+int(x[1]))) for x in batched(seeds,2)]
+    seeds = [range(int(x[0]),int(x[0])+int(x[1])) for x in batched(seeds,2)]
 
     mlist = []
     for mapdata in data.split('\n\n')[1:]:
@@ -47,6 +47,7 @@ def import_data(infile):
     found = False
     while not found:
         x = (location := location + 1)
+        print(f'Testing location: {location}')
         for maps in mlist[::-1]:
             x = maps.map(x)
 
