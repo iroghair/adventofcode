@@ -1,7 +1,12 @@
-import re
+import time
 import numpy as np
+from math import sqrt
 from scipy.optimize import fsolve
 from math import floor
+
+def abc(a,b,c):
+    D = sqrt(b**2-4*a*c)
+    return [(-b+D)/(2*a), (-b-D)/(2*a)]
 
 def import_data(infile):
     with open(infile,'r') as file:
@@ -16,7 +21,8 @@ def run_part_1_2(trace,drace):
     total_nways_pt1 = 1
     for b,c in zip(trace,drace):
         # Get the roots of the parabolic equation, make sure that it is strictly above by subtracting eps
-        roots = np.roots([-1,b,-c-1e-13])
+        # roots = np.roots([-1,b,-c-1e-13])
+        roots = abc(*[-1,b,-c-1e-13])
         # Floor the number since we can only use discrete ms units
         roots = [floor(x) if floor(x)!=x else floor(x-1) for x in roots]
         nways = abs(roots[0] - roots[1])
@@ -36,9 +42,10 @@ def run_part_1_2(trace,drace):
 if __name__ == '__main__':
     part1 = True
     infile = 'input.txt'
-    time,dist = import_data(infile)
-
-    run_part_1_2(time,dist)
+    rtime,rdist = import_data(infile)
+    tstart = time.time()
+    run_part_1_2(rtime,rdist)
+    print(f'Finished in {1.0e6*(time.time() - tstart)} us')
         
 
    
