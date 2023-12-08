@@ -31,6 +31,8 @@ def run_part_2(moveseq,network):
             break
         else:
             steps += 1
+            if steps % 1000000 == 0 and debug:
+                print(steps)
             for i,pos in enumerate(simpos):
                 simpos[i] = network[pos][move]
 
@@ -39,6 +41,7 @@ def run_part_2(moveseq,network):
 if __name__ == '__main__':
     part1 = False
     part2 = True
+    debug = True
     infile = 'input.txt'
     data = import_data(infile)
 
