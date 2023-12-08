@@ -23,25 +23,35 @@ def run_part_1(moveseq,network):
 
     print(f'Part 1: {steps}')
 
-def run_part_2(data):
-    ans_pt2 = ...
+def run_part_2(moveseq,network):
+    simpos = [x for x in network.keys() if x[-1] == 'A']
+    steps = 0
+    for move in cycle(moveseq):
+        if len([p for p in simpos if p[-1] == 'Z']) == len(simpos):
+            break
+        else:
+            steps += 1
+            for i,pos in enumerate(simpos):
+                simpos[i] = network[pos][move]
 
-    print(f'Part 2: {ans_pt2}')
+    print(f'Part 2: {steps}')
 
 if __name__ == '__main__':
-    part2 = False
+    part1 = False
+    part2 = True
     infile = 'input.txt'
     data = import_data(infile)
 
     init = 'AAA'
     goal = 'ZZZ'
-    tstart = time.time_ns()
-    run_part_1(*data)
-    print(f'Part 1 finished in {time.time_ns() - tstart} us')
+    if part1:
+        tstart = time.time_ns()
+        run_part_1(*data)
+        print(f'Part 1 finished in {time.time_ns() - tstart} us')
     
     if part2:
         tstart = time.time()
-        run_part_2(data)
+        run_part_2(*data)
         print(f'Part 2 finished in {time.time() - tstart} s')
         
 
