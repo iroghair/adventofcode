@@ -1,7 +1,7 @@
-import re
 import numpy as np
 import time
 from itertools import cycle
+from math import prod
 
 def import_data(infile):
     with open(infile,'r') as file:
@@ -24,33 +24,30 @@ def run_part_1(moveseq,network):
     print(f'Part 1: {steps}')
 
 def run_part_2(moveseq,network):
-    simpos = [x for x in network.keys() if x[-1] == 'A']
-    steps = 0
-    for move in cycle(moveseq):
-        if len([p for p in simpos if p[-1] == 'Z']) == len(simpos):
-            break
-        else:
-            steps += 1
-            if steps % 1000000 == 0 and debug:
-                print(steps)
-            for i,pos in enumerate(simpos):
-                simpos[i] = network[pos][move]
-
-    print(f'Part 2: {steps}')
+    steplist = []
+    for pos in [x for x in network.keys() if x[-1] == 'A']:
+        steps = 0
+        for move in cycle(moveseq):
+            if pos[-1] == 'Z':
+                break
+            else:
+                steps += 1
+                pos = network[pos][move]
+        steplist.append(steps)
+    print(f'Part 2: {np.lcm.reduce(steplist)}')
 
 if __name__ == '__main__':
-    part1 = False
+    part1 = True
     part2 = True
-    debug = True
     infile = 'input.txt'
     data = import_data(infile)
 
     init = 'AAA'
     goal = 'ZZZ'
     if part1:
-        tstart = time.time_ns()
+        tstart = time.time()
         run_part_1(*data)
-        print(f'Part 1 finished in {time.time_ns() - tstart} us')
+        print(f'Part 1 finished in {time.time() - tstart} s')
     
     if part2:
         tstart = time.time()
