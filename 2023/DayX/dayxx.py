@@ -1,5 +1,6 @@
 import re
 import numpy as np
+import time
 
 def import_data(infile):
     with open(infile,'r') as file:
@@ -17,14 +18,18 @@ def run_part_2(data):
     print(f'Part 2: {ans_pt2}')
 
 if __name__ == '__main__':
-    part1 = True
+    part2 = False
     infile = 'test.txt'
     data = import_data(infile)
 
-    if part1:
-        run_part_1(data)
-    else:
+    tstart = time.time_ns()
+    run_part_1(data)
+    print(f'Part 1 finished in {time.time_ns() - tstart} us')
+    
+    if part2:
+        tstart = time.time()
         run_part_2(data)
+        print(f'Part 2 finished in {time.time() - tstart} s')
         
 
    
