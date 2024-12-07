@@ -47,7 +47,7 @@ def main(infile):
     part_1,_ = do_guard_walk(grid, pos,walked)
     
     # Place an obstacle at each vacant position (except the guard start position) and count the number of infinite loops.
-    openx,openy = np.where(grid!=1)
+    openx,openy = np.where(walked==1)
     part_2 = 0
     for x,y in zip(openx,openy):
         if np.all((x,y) == start):
@@ -57,6 +57,7 @@ def main(infile):
         steps,p2 = do_guard_walk(grid_cp,start,walked)
         if p2 == 1:
             part_2 += p2
+            print(x,y)
 
     print(f'Part 1: {part_1}')
     print(f'Part 2: {part_2}')
