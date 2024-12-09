@@ -1,4 +1,4 @@
-# day06.py
+# day07.py
 from itertools import pairwise
 from math import prod
 import numpy as np
@@ -12,17 +12,14 @@ def parse(infile):
 def concat(values):
     return int(''.join([str(v) for v in values]))
     
-def compute(outcome: int, values: list):
-    while len(values) >= 1:
-        s = sum(values[0:2])
-        p = prod(values[0:2])
-        c = concat(values[0:2])
-        if len(values) <= 2:
-            return outcome in [s,p,c]
+def compute(outcome: int, values: list, concat:bool):
+    s = sum(values[0:2])
+    p = prod(values[0:2])
+    c = concat(values[0:2]) if concat else 0
+    if len(values) <= 2:
+        return outcome in [s,p,c]
 
-        return compute(outcome, [s] + values[2:]) or compute(outcome, [p] + values[2:]) or compute(outcome, [c] + values[2:])
-    print(f'Shouldn\'t come here. {outcome=}, {values=}')
-    exit()
+    return compute(outcome, [s] + values[2:]) or compute(outcome, [p] + values[2:]) or (compute(outcome, [c] + values[2:]) and concat)
         
 def main():
     infile = 'test.txt'
