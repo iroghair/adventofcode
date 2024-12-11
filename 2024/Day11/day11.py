@@ -1,5 +1,4 @@
 # day09.py
-import numpy as np
 
 testcases = ['0 1 10 99 999', '125 17', '6563348 67 395 0 6 4425 89567 739318']
 blink = {0: {"result": [1], "count": 0}} 
