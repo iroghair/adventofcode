@@ -101,13 +101,19 @@ def main():
     for plot in plots:
         # Get coordinates of plot
         c = np.array(list(plot['Coords']))
+        # dim =  mx-mn+1
+        
+        # Create a matrix containing the plot as 1 and add 0's elsewhere 
         mx,mn = np.max(c,axis=0), np.min(c,axis=0)
-        dim =  mx-mn+1
-        plot_matrix = np.zeros(dim)
+        plot_matrix = np.zeros(mx-mn+1)
         plot_matrix[c[:,0]-mn[0],c[:,1]-mn[1]] = 1
-        shift = np.array([[1,-1,0],[-1,1,0],[0,0,0]])
-        a = sp.signal.convolve2d(plot_matrix,shift)
-        total_sides = np.abs(a).sum()
+        
+        # The filter array computes diagonal gradients, representing corners
+        grad_diag = np.array([[1,-1,0],[-1,1,0],[0,0,0]])
+        corners = sp.signal.convolve2d(plot_matrix,grad_diag)
+        
+        # Total sides is equal to the sum of all corners
+        total_sides = np.abs(corners).sum()
         cost_of_plot = total_sides * plot['Area']
         if DEBUG:
             print(f'Cost for {plot['Plant']}: {cost_of_plot}, {total_sides=}')
