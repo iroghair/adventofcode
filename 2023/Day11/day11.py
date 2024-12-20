@@ -34,7 +34,7 @@ def run_part_1_2(gloc,size,expansion_factor):
 
 
 if __name__ == '__main__':
-    infile = 'input.txt'
+    infile = 'aoc-2023-day-11-challenge-3.in'
     debug = False
     gloc,size = import_data(infile)
 

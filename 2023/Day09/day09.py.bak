@@ -1,0 +1,69 @@
+import re
+import numpy as np
+import time
+
+def import_data(infile):
+    # with open(infile,'r') as file:
+    #     data = file.read().splitlines()
+    data = list()
+    for s in map(str.splitlines,open(infile)):
+        data.append(np.array([int(x) for x in s[0].split()]))
+    return data
+
+def extrapolate_end(entry):
+    target = 0
+    differences = np.diff(entry)
+    print('Diff:  ', differences)
+    if not np.all(differences==0):
+        target = extrapolate_end(differences)
+        print('Appended: ',entry[-1])
+    
+    return target+entry[-1]
+
+def extrapolate_start(entry):
+    target = 0
+    differences = np.diff(entry)
+    print('Diff:  ', differences)
+    if not np.all(differences==0):
+        target = extrapolate_start(differences)
+        print('Appended: ',entry[0])
+    
+    return entry[0]-target
+
+        
+def run_part_1(data):
+    ans_pt1 = 0
+    for entry in data:
+        print('Entry: ',entry)
+        extrapolated = extrapolate_end(entry)
+        print('Extrapolated: ', extrapolated)
+        ans_pt1 += extrapolated
+    print(f'Part 1: {ans_pt1}')
+
+def run_part_2(data):
+    ans_pt2 = 0
+    for entry in data:
+        print('Entry: ',entry)
+        extrapolated = extrapolate_start(entry)
+        print('Extrapolated: ', extrapolated)
+        ans_pt2 += extrapolated
+
+    print(f'Part 2: {ans_pt2}')
+
+if __name__ == '__main__':
+    part2 = True
+    infile = 'input.txt'
+    data = import_data(infile)
+
+    tstart = time.time_ns()
+    run_part_1(data)
+    print(f'Part 1 finished in {time.time_ns() - tstart} us')
+    
+    if part2:
+        tstart = time.time()
+        run_part_2(data)
+        print(f'Part 2 finished in {time.time() - tstart} s')
+        
+
+   
+                        

@@ -1,0 +1,61 @@
+import re
+import numpy as np
+import time
+from itertools import combinations
+
+def import_data(infile):
+    with open(infile,'r') as file:
+        data = file.read().splitlines()
+
+    gloc = np.empty((0,2),dtype=np.int32)
+    for i,line in enumerate(data):
+        for res in re.finditer(r'\#',line):
+            gloc = np.append(gloc,[[i,res.start()]],axis=0)
+
+    size = (len(data),len(data[0]))
+    return gloc,size
+
+def run_part_1(gloc,size):
+    ngal = gloc.shape[0]
+    ncom = sum(range(ngal))
+    print(gloc)
+    for x in range(size[0])[::-1]:
+        if x not in gloc[:,0]:
+            gloc[gloc[:,0]>x,0]+=1
+    for x in range(size[1])[::-1]:
+        if x not in gloc[:,1]:
+            gloc[gloc[:,1]>x,1]+=1
+
+    print(gloc)
+    # exrow = [x for x in range(size[0]) if x not in gloc[:,0]]
+    # excol = [x for x in range(size[1]) if x not in gloc[:,1]]
+    ans_pt1 = 0
+    for pair in combinations(range(ngal),2):
+        dist = np.linalg.norm(gloc[pair[0]]-gloc[pair[1]],1)
+        print('Pair: ',pair, ' has a distance: ', dist)
+        ans_pt1 += dist
+
+    print(f'Part 1: {ans_pt1}')
+
+def run_part_2(data):
+    ans_pt2 = ...
+
+    print(f'Part 2: {ans_pt2}')
+
+if __name__ == '__main__':
+    part2 = False
+    infile = 'input.txt'
+    gloc,size = import_data(infile)
+
+    tstart = time.time_ns()
+    run_part_1(gloc,size)
+    print(f'Part 1 finished in {time.time_ns() - tstart} us')
+    
+    if part2:
+        tstart = time.time()
+        run_part_2(data)
+        print(f'Part 2 finished in {time.time() - tstart} s')
+        
+
+   
+                        
