@@ -11,7 +11,7 @@ def largest_digit(line: str) -> tuple:
     for i,ch in enumerate(numbers):
         if ch > res[0]:
             res = (ch,i)
-            if ch == 9:
+            if ch == 9: # Small speedup
                 break
     return res
 
